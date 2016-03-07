@@ -127,7 +127,7 @@ journald = "systemd-journald"
 
 -- | Enables persistent storage of the journal.
 persistentJournal :: Property NoInfo
-persistentJournal = check (not <$> doesDirectoryExist dir) $ 
+persistentJournal = check (not <$> doesDirectoryExist dir) $
 	combineProperties "persistent systemd journal"
 		[ cmdProperty "install" ["-d", "-g", "systemd-journal", dir]
 			`assume` MadeChange
@@ -145,7 +145,7 @@ type Option = String
 -- Does not ensure that the relevant daemon notices the change immediately.
 --
 -- This assumes that there is only one [Header] per file, which is
--- currently the case for files like journald.conf and system.conf. 
+-- currently the case for files like journald.conf and system.conf.
 -- And it assumes the file already exists with
 -- the right [Header], so new lines can just be appended to the end.
 configured :: FilePath -> Option -> String -> Property NoInfo
@@ -174,15 +174,13 @@ journaldConfigured option value =
 
 -- | Ensures machined and machinectl are installed
 machined :: Property NoInfo
-machined = go `describe` "machined installed"
-  where
-	go = withOS ("standard sources.list") $ \o ->
-		case o of
-			-- Split into separate debian package since systemd 225.
-			(Just (System (Debian suite) _))
-				| not (isStable suite) -> ensureProperty $
-					Apt.installed ["systemd-container"]
-			_ -> noChange
+machined = withOS "machined installed" $ \o ->
+	case o of
+		-- Split into separate debian package since systemd 225.
+		(Just (System (Debian suite) _))
+			| not (isStable suite) -> ensureProperty $
+				Apt.installed ["systemd-container"]
+		_ -> noChange
 
 -- | Defines a container with a given machine name, and operating system,
 -- and how to create its chroot if not already present.
@@ -232,7 +230,7 @@ nspawned c@(Container name (Chroot.Chroot loc builder _) h) =
 
 	-- Use nsenter to enter container and and run propellor to
 	-- finish provisioning.
-	containerprovisioned = 
+	containerprovisioned =
 		Chroot.propellChroot chroot (enterContainerProcess c) False
 			<!>
 		doNothing
@@ -261,7 +259,7 @@ nspawnService (Container name _ _) cfg = setup <!> teardown
 			, "--machine=%i"
 			] ++ nspawnServiceParams cfg
 		| otherwise = l
-	
+
 	goodservicefile = (==)
 		<$> servicefilecontent
 		<*> catchDefaultIO "" (readFile servicefile)
@@ -368,7 +366,7 @@ class Publishable a where
 	toPublish :: a -> String
 
 instance Publishable Port where
-	toPublish (Port n) = show n
+	toPublish port = fromPort port
 
 instance Publishable (Bound Port) where
 	toPublish v = toPublish (hostSide v) ++ ":" ++ toPublish (containerSide v)
@@ -380,7 +378,7 @@ instance Publishable (Proto, Bound Port) where
 	toPublish (UDP, fp) = "udp:" ++ toPublish fp
 
 -- | Publish a port from the container to the host.
--- 
+--
 -- This feature was first added in systemd version 220.
 --
 -- This property is only needed (and will only work) if the container
