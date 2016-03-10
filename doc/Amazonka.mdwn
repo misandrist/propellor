@@ -1,0 +1,18 @@
+# Amazonka Support
+
+[Amazonka](http://hackage.haskell.org/package/amazonka) is a comprensive set of
+libraries for managing AWS services. Integrations efforts by
+[Evan Cofsky](https://github.com/misandrist/propellor/tree/Amazonka)] will
+mostly focus on what he needs at the moment, and then expand outwards from
+there.
+
+# EC2 Instance Provisioning
+
+Obviously,
+[configuring EC2 instances](http://hackage.haskell.org/package/amazonka-ec2)
+will be pretty important, so he'll start there.
+
+Integrating the metadata from these with
+[VPCs](http://brendanhay.nz/amazonka-doc/amazonka-ec2/Network-AWS-EC2-CreateVPC.html)
+for addressing and routing will be a pretty compelling thing, too, but I'm not
+at all sure how that will work (yet).
