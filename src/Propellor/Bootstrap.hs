@@ -59,10 +59,11 @@ depsCommand msys = "( " ++ intercalate " ; " (concat [osinstall, cabalinstall]) 
 	osinstall = case msys of
 		Just (System (FreeBSD _) _) -> map pkginstall fbsddeps
 		Just (System (Debian _) _) -> useapt
-		Just (System (Buntish _) _) -> useapt
+		Just (System (Buntish _) _) -> getppa:useapt
 		-- assume a debian derived system when not specified
 		Nothing -> useapt
 
+	getppa = "add-apt-repository ppa:jtgeibel/ghc-7.10.3"
 	useapt = "apt-get update" : map aptinstall debdeps
 
 	cabalinstall =
@@ -123,7 +124,7 @@ installGitCommand msys = case msys of
 	Nothing -> use apt
   where
 	use cmds = "if ! git --version >/dev/null; then " ++ intercalate " && " cmds ++ "; fi"
-	apt = 
+	apt =
 		[ "apt-get update"
 		, "DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends --no-upgrade -y install git"
 		]

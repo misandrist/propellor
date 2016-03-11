@@ -1,1 +1,1 @@
-config-simple.hs
+config-navipoint.hs

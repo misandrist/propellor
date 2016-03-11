@@ -59,7 +59,6 @@ Library
    IfElse, process, bytestring, hslogger, unix-compat, ansi-terminal,
    containers (>= 0.5), network, async, time, mtl, transformers,
    exceptions (>= 0.6), stm, text, unix
-
   Exposed-Modules:
     Propellor
     Propellor.Base

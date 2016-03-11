@@ -52,7 +52,7 @@ instance IsPrivDataSource PrivDataSource where
 
 -- | A context in which a PrivDataField is used.
 --
--- Often this will be a domain name. For example, 
+-- Often this will be a domain name. For example,
 -- Context "www.example.com" could be used for the SSL cert
 -- for the web server serving that domain. Multiple hosts might
 -- use that privdata.

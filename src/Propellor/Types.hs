@@ -34,6 +34,7 @@ module Propellor.Types
 	, module Propellor.Types.OS
 	, module Propellor.Types.Dns
 	, module Propellor.Types.Result
+	, module Propellor.Types.PKI
 	, module Propellor.Types.ZFS
 	, propertySatisfy
 	, ignoreInfo
@@ -50,6 +51,7 @@ import Propellor.Types.Info
 import Propellor.Types.OS
 import Propellor.Types.Dns
 import Propellor.Types.Result
+import Propellor.Types.PKI
 import Propellor.Types.ZFS
 
 -- | Everything Propellor knows about a system: Its hostname,
