@@ -8,7 +8,8 @@ import System.IO
 import Control.Monad
 import Control.Applicative
 import Prelude
-
+import Data.String.Utils
+import Data.String (IsString(..))
 import Propellor.Base
 import qualified Propellor.Property.File as File
 import qualified Propellor.Property.Service as Service
@@ -332,3 +333,26 @@ hasForeignArch arch = check notAdded (add `before` update)
 
 dpkgStatus :: FilePath
 dpkgStatus = "/var/lib/dpkg/status"
+
+data PPA = PPA {
+	ppaAccount :: String,
+	ppaArchive :: String
+} deriving (Eq, Ord)
+
+instance Show PPA where
+	show p = concat ["ppa:", ppaAccount p, "/", ppaArchive p]
+
+instance IsString PPA where
+	-- | Parse strings like "ppa:zfs-native/stable" into a PPA.
+	fromString s =
+		let
+			[_, ppa] = split "ppa:" s
+			[acct, arch] = split "/" ppa
+		in
+			PPA acct arch
+
+addPpa :: PPA -> Property NoInfo
+addPpa p =
+	cmdPropertyEnv "apt-add-repository" ["--yes", show p] noninteractiveEnv
+	`assume` MadeChange
+	`describe` ("Added PPA " ++ (show p))
