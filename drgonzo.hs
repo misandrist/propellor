@@ -45,7 +45,7 @@ systools :: [String]
 systools = ["zsh", "emacs24", "most"]
 
 zfstools :: [String]
-zfstools = ["zfs-dkms", "zfs-doc", "zfs-initramfs", "zfsutils-linux", "zfsnap", "zfs-zed"]
+zfstools = ["spl-dkms", "zfs-dkms", "zfsutils"]
 
 browsing :: [String]
 browsing = ["chromium-browser"]
