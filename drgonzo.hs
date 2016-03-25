@@ -28,7 +28,7 @@ drgonzo :: Host
 drgonzo = host "DrGonzo"
 	& os (System (Buntish "Wily") "amd64")
 	& Apt.unattendedUpgrades
-	& Apt.addPpa "ppa:justinbogner/haskell-platform"
+	& Apt.addPpa "ppa:jtgeibel/ghc-7.10.3"
 	& Apt.addPpa "ppa:zfs-native/stable"
 	& Apt.update
 	& Apt.upgrade
@@ -51,7 +51,7 @@ browsing :: [String]
 browsing = ["chromium-browser"]
 
 development :: [String]
-development = ["build-essential", "zlib1g-dev"]
+development = ["build-essential", "zlib1g-dev", "virtualenv"]
 
 crypto :: [String]
 crypto = ["ssh", "gpg", "gnutls-bin", "gnutls-doc"]
