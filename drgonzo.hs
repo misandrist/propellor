@@ -54,7 +54,7 @@ development :: [String]
 development = ["build-essential", "zlib1g-dev", "virtualenv"]
 
 crypto :: [String]
-crypto = ["ssh", "gpg", "gnutls-bin", "gnutls-doc"]
+crypto = ["ssh", "gnupg", "gnutls-bin", "gnutls-doc"]
 
 texlive :: [String]
 texlive = [
