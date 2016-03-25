@@ -39,10 +39,13 @@ removedPkgs :: [String]
 removedPkgs = ["firefox"]
 
 installedPkgs :: [String]
-installedPkgs = concat [systools, zfstools, browsing, development, crypto, texlive]
+installedPkgs = concat [systools, zfstools, browsing, development, crypto, texlive, virtualization]
 
 systools :: [String]
-systools = ["zsh", "emacs24", "most"]
+systools = ["zsh", "emacs24", "most", "btrfs-tools"]
+
+virtualization :: [String]
+virtualization = ["lxd", "lxd-client", "lxd-tools", "debootstrap", "virtualbox", "virtualbox-dkms", "virtualbox-qt"]
 
 zfstools :: [String]
 zfstools = ["spl-dkms", "zfs-dkms", "zfsutils"]
