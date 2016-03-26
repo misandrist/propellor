@@ -70,8 +70,8 @@ development :: [String]
 development = ["build-essential", "zlib1g-dev", "virtualenv",
 	       "mono-complete", "fsharp", "monodevelop", "exuberant-ctags",
 	       "mono-vbnc", "mono-xsp4", "monodevelop-database",
-	       "monodevelop-debugger-gdb", "monodevelop-nunit",
-	       "monodevelop-versioncontrol", "monodoc-browser"]
+	       "monodevelop-nunit", "monodevelop-versioncontrol",
+	       "monodoc-browser"]
 
 crypto :: [String]
 crypto = ["ssh", "gnutls-bin", "gnutls-doc"]
