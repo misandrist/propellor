@@ -5,6 +5,8 @@
 import Propellor
 import qualified Propellor.Property.File as File
 import qualified Propellor.Property.Apt as Apt
+import qualified Propellor.Property.Gpg as Gpg
+
 import qualified Propellor.Property.Network as Network
 --import qualified Propellor.Property.Ssh as Ssh
 import qualified Propellor.Property.Cron as Cron
@@ -30,10 +32,21 @@ drgonzo = host "DrGonzo"
 	& Apt.unattendedUpgrades
 	& Apt.addPpa "ppa:jtgeibel/ghc-7.10.3"
 	& Apt.addPpa "ppa:zfs-native/stable"
+	& Apt.addKeyId xamarinAptKeyId
+	& Apt.addRepository xamarinAptRepository
 	& Apt.update
 	& Apt.upgrade
+	& Gpg.installed
 	& Apt.removed removedPkgs
 	& Apt.installed installedPkgs
+
+xamarinAptKeyId :: Apt.AptKeyId
+xamarinAptKeyId = Apt.AptKeyId "Xamarin Mono" "3FA7E032" "keyserver.ubuntu.com"
+
+xamarinAptRepository :: Apt.AptRepository
+xamarinAptRepository =
+	Apt.AptRepositorySource
+		"deb http://download.mono-project.com/repo/debian wheezy main"
 
 removedPkgs :: [String]
 removedPkgs = ["firefox"]
@@ -54,10 +67,12 @@ browsing :: [String]
 browsing = ["chromium-browser"]
 
 development :: [String]
-development = ["build-essential", "zlib1g-dev", "virtualenv"]
+development = ["build-essential", "zlib1g-dev", "virtualenv",
+	       "mono-complete", "referenceassemblies-pcl", "ca-certificates-mono",
+	       "fsharp"]
 
 crypto :: [String]
-crypto = ["ssh", "gnupg", "gnutls-bin", "gnutls-doc"]
+crypto = ["ssh", "gnutls-bin", "gnutls-doc"]
 
 texlive :: [String]
 texlive = [
