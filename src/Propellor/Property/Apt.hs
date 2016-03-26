@@ -356,3 +356,61 @@ addPpa p =
 	cmdPropertyEnv "apt-add-repository" ["--yes", show p] noninteractiveEnv
 	`assume` MadeChange
 	`describe` ("Added PPA " ++ (show p))
+
+data AptKeyId = AptKeyId {
+	akiName :: String,
+	akiId :: String,
+	akiServer :: String
+	} deriving (Eq, Ord)
+
+instance Show AptKeyId where
+	show k = unwords ["Apt Key", akiName k, akiId k, "from", akiServer k]
+
+addKeyId :: AptKeyId -> Property NoInfo
+addKeyId keyId =
+	check keyTrusted akcmd
+	`describe` (unwords ["Add third-party Apt key", show keyId])
+  where
+	akcmd =
+		cmdProperty "apt-key" ["adv", "--keyserver", akiServer keyId, "--recv-keys", akiId keyId]
+	keyTrusted =
+		let
+			pks ls = concatMap (drop 1 . split "/")
+				$ concatMap (take 1 . drop 1 . words)
+				$ filter (\l -> "pub" `isPrefixOf` l)
+					$ lines ls
+			nkid = take 8 (akiId keyId)
+		in
+			(isInfixOf [nkid] . pks) <$> readProcess "apt-key" ["list"]
+
+-- deb http://download.mono-project.com/repo/debian wheezy main
+data AptSource = AptSource {
+	-- FIXME asOptions :: [String],
+	asURL :: String,
+	asSuite :: String,
+	asComponents :: [String]
+	} deriving (Eq, Ord)
+
+instance Show AptSource where
+	show asrc = unwords ["deb", asURL asrc, asSuite asrc, unwords . asComponents $ asrc]
+
+instance IsString AptSource where
+	fromString s =
+		let
+			url:suite:comps = drop 1 . words $ s
+		in
+			AptSource url suite comps
+
+data AptRepository = AptRepositoryPPA PPA | AptRepositorySource AptSource
+addRepository :: AptRepository -> Property NoInfo
+addRepository (AptRepositoryPPA p) = addPpa p
+addRepository (AptRepositorySource src) =
+	check repoExists addSrc `describe` unwords ["Adding APT repository", show src]
+  where
+	allSourceLines =
+		readProcess "/bin/sh" ["-c", "cat /etc/apt/sources.list /etc/apt/sources.list.d/*"]
+	activeSources = map (\s -> fromString s :: AptSource )
+		. filter (not . isPrefixOf "#")
+		. filter (/= "") . lines <$> allSourceLines
+	repoExists = isInfixOf [src] <$> activeSources
+	addSrc = cmdProperty "apt-add-source" [show src]
