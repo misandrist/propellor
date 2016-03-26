@@ -38,7 +38,7 @@ Executable propellor
   Main-Is: wrapper.hs
   GHC-Options: -threaded -Wall -fno-warn-tabs
   Hs-Source-Dirs: src
-  Build-Depends: 
+  Build-Depends:
     -- propellor needs to support the ghc shipped in Debian stable
     base >= 4.5, base < 5,
     MissingH, directory, filepath, IfElse, process, bytestring, hslogger,
@@ -70,6 +70,7 @@ Library
     Propellor.Property.Aiccu
     Propellor.Property.Apache
     Propellor.Property.Apt
+    Propellor.Property.AptSoftwarePropertiesCommon
     Propellor.Property.Cmd
     Propellor.Property.Concurrent
     Propellor.Property.Conductor
