@@ -68,8 +68,7 @@ browsing = ["chromium-browser"]
 
 development :: [String]
 development = ["build-essential", "zlib1g-dev", "virtualenv",
-	       "mono-complete", "referenceassemblies-pcl", "ca-certificates-mono",
-	       "fsharp"]
+	       "mono-complete", "fsharp"]
 
 crypto :: [String]
 crypto = ["ssh", "gnutls-bin", "gnutls-doc"]
