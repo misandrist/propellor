@@ -52,7 +52,7 @@ removedPkgs :: [String]
 removedPkgs = ["firefox"]
 
 installedPkgs :: [String]
-installedPkgs = concat [systools, zfstools, browsing, development, crypto, texlive, virtualization]
+installedPkgs = concat [systools, zfstools, browsing, development, crypto, texlive, virtualization, kde]
 
 systools :: [String]
 systools = ["zsh", "emacs24", "most", "btrfs-tools"]
@@ -75,6 +75,9 @@ development = ["build-essential", "zlib1g-dev", "virtualenv",
 
 crypto :: [String]
 crypto = ["ssh", "gnutls-bin", "gnutls-doc"]
+
+kde :: [String]
+kde = ["akonadi-backend-postgresql"]
 
 texlive :: [String]
 texlive = [
