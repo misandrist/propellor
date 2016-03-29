@@ -4,12 +4,10 @@
 import Propellor
 import qualified Propellor.Property.File as File
 import qualified Propellor.Property.Apt as Apt
-import qualified Propellor.Property.AptSoftwarePropertiesCommon as SWPC
-import qualified Propellor.Property.Gpg as Gpg
-import qualified Propellor.Property.Network as Network
---import qualified Propellor.Property.Ssh as Ssh
+import qualified Propellor.Property.Apt.PPA as PPA
 import qualified Propellor.Property.Cron as Cron
 import qualified Propellor.Property.User as User
+import qualified Propellor.Property.Gpg as Gpg
 
 main :: IO ()
 main = defaultMain hosts
@@ -17,8 +15,8 @@ main = defaultMain hosts
 -- The hosts propellor knows about.
 hosts :: [Host]
 hosts =
-	[ mybox,
-	  buntishbox
+	[ mybox
+	, buntishbox
 	]
 
 -- An example host.
@@ -33,45 +31,36 @@ mybox = host "mybox.example.com" $ props
 	& File.dirExists "/var/www"
 	& Cron.runPropellor (Cron.Times "30 * * * *")
 
--- A generic webserver in a Docker container.
-webserverContainer :: Docker.Container
-webserverContainer = Docker.container "webserver" (Docker.latestImage "debian")
-	& os (System (Debian (Stable "jessie")) "amd64")
-	& Apt.stdSourcesList
-	& Docker.publish "80:80"
-	& Docker.volume "/var/www:/var/www"
-	& Apt.serviceInstalledRunning "apache2"
-
 buntishbox :: Host
-buntishbox = host "buntish.example.com"
-	& os (System (Buntish "wily") "amd64")
+buntishbox = host "buntish.example.com" $ props
+	& osBuntish "Wily" "amd64"
 	& Apt.unattendedUpgrades
 	& Gpg.installed
-	& SWPC.addPpa ghc710ppa
-	& SWPC.addPpa zfsPPA
-	& SWPC.addKeyId xamarinAptKeyId
-	& SWPC.addRepository xamarinAptRepository
+	& PPA.addPpa ghc710ppa
+	& PPA.addPpa zfsPPA
+	& PPA.addKeyId xamarinAptKeyId
+	& PPA.addRepository xamarinAptRepository
 	& Apt.update
 	& Apt.upgrade
 	& Apt.installed xamarinTools
 
 -- | PPA for GHC 7.10.3
-ghc710ppa :: SWPC.PPA
-ghc710ppa = SWPC.PPA "jtgeibel" "ghc-7.10.3"
+ghc710ppa :: PPA.PPA
+ghc710ppa = PPA.PPA "jtgeibel" "ghc-7.10.3"
 
 -- | PPA for ZFS on Linux
-zfsPPA :: SWPC.PPA
-zfsPPA = SWPC.PPA "zfs-native" "stable"
+zfsPPA :: PPA.PPA
+zfsPPA = PPA.PPA "zfs-native" "stable"
 
 -- | Xamarin's GPG key they sign their releases with.
-xamarinAptKeyId :: SWPC.AptKeyId
-xamarinAptKeyId = SWPC.AptKeyId "Xamarin Mono" "3FA7E032" "keyserver.ubuntu.com"
+xamarinAptKeyId :: PPA.AptKeyId
+xamarinAptKeyId = PPA.AptKeyId "Xamarin Mono" "3FA7E032" "keyserver.ubuntu.com"
 
 -- | Xamarin's repository all the monodevelop packages are hosted in.
-xamarinAptRepository :: SWPC.AptRepository
+xamarinAptRepository :: PPA.AptRepository
 xamarinAptRepository =
-	SWPC.AptRepositorySource $
-		SWPC.AptSource "http://download.mono-project.com/repo/debian" "wheezy" ["main"]
+	PPA.AptRepositorySource $
+		PPA.AptSource "http://download.mono-project.com/repo/debian" "wheezy" ["main"]
 
 -- | Xamarin's Mono development tools for Linux.
 xamarinTools :: [String]
