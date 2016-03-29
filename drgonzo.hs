@@ -4,6 +4,7 @@
 
 import Propellor
 import qualified Propellor.Property.Apt as Apt
+import qualified Propellor.Property.Apt.PPA as PPA
 import qualified Propellor.Property.Gpg as Gpg
 
 main :: IO ()
@@ -16,28 +17,20 @@ hosts =
 
 -- An example host.
 drgonzo :: Host
-drgonzo = host "DrGonzo"
-	& os (System (Buntish "Wily") "amd64")
+drgonzo = host "DrGonzo" $ props
+	& osBuntish "Wily" "amd64"
 	& Apt.unattendedUpgrades
-	& Apt.addPpa "ppa:jtgeibel/ghc-7.10.3"
-	& Apt.addPpa "ppa:zfs-native/stable"
-	& Apt.addKeyId xamarinAptKeyId
-	& Apt.addRepository xamarinAptRepository
-	& Apt.addKeyId spotifyAptKeyId
-	& Apt.addRepository spotifyAptRepository
+	& PPA.addPpa "ppa:jtgeibel/ghc-7.10.3"
+	& PPA.addPpa "ppa:zfs-native/stable"
+	& PPA.addKeyId xamarinAptKeyId
+	& PPA.addRepository xamarinAptRepository
+	& PPA.addKeyId spotifyAptKeyId
+	& PPA.addRepository spotifyAptRepository
 	& Apt.update
 	& Apt.upgrade
 	& Gpg.installed
 	& Apt.removed removedPkgs
 	& Apt.installed installedPkgs
-
-xamarinAptKeyId :: Apt.AptKeyId
-xamarinAptKeyId = Apt.AptKeyId "Xamarin Mono" "3FA7E032" "keyserver.ubuntu.com"
-
-xamarinAptRepository :: Apt.AptRepository
-xamarinAptRepository =
-	Apt.AptRepositorySource
-		"deb http://download.mono-project.com/repo/debian wheezy main"
 
 removedPkgs :: [String]
 removedPkgs = ["firefox"]
@@ -115,14 +108,22 @@ texlive = [
 	"texlive-science",
 	"texlive-xetex"]
 
-spotifyAptKeyId :: Apt.AptKeyId
+spotifyAptKeyId :: PPA.AptKeyId
 spotifyAptKeyId =
-	Apt.AptKeyId "Spotify" "BBEBDCB318AD50EC6865090613B00F1FD2C19886" "hkp://keyserver.ubuntu.com:80"
+	PPA.AptKeyId "Spotify" "BBEBDCB318AD50EC6865090613B00F1FD2C19886" "hkp://keyserver.ubuntu.com:80"
 
-spotifyAptRepository :: Apt.AptRepository
+spotifyAptRepository :: PPA.AptRepository
 spotifyAptRepository =
-	Apt.AptRepositorySource
+	PPA.AptRepositorySource
 		"deb http://repository.spotify.com stable non-free"
 
 spotify :: [String]
 spotify = ["spotify-client"]
+
+xamarinAptKeyId :: PPA.AptKeyId
+xamarinAptKeyId = PPA.AptKeyId "Xamarin Mono" "3FA7E032" "keyserver.ubuntu.com"
+
+xamarinAptRepository :: PPA.AptRepository
+xamarinAptRepository =
+	PPA.AptRepositorySource
+		"deb http://download.mono-project.com/repo/debian wheezy main"
