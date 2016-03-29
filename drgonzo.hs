@@ -3,19 +3,8 @@
 -- Installation for DrGonzo, my new laptop from Lara.
 
 import Propellor
-import qualified Propellor.Property.File as File
 import qualified Propellor.Property.Apt as Apt
 import qualified Propellor.Property.Gpg as Gpg
-
-import qualified Propellor.Property.Network as Network
---import qualified Propellor.Property.Ssh as Ssh
-import qualified Propellor.Property.Cron as Cron
-import Propellor.Property.Scheduled
---import qualified Propellor.Property.Sudo as Sudo
-import qualified Propellor.Property.User as User
---import qualified Propellor.Property.Hostname as Hostname
---import qualified Propellor.Property.Tor as Tor
-import qualified Propellor.Property.Docker as Docker
 
 main :: IO ()
 main = defaultMain hosts
@@ -34,6 +23,8 @@ drgonzo = host "DrGonzo"
 	& Apt.addPpa "ppa:zfs-native/stable"
 	& Apt.addKeyId xamarinAptKeyId
 	& Apt.addRepository xamarinAptRepository
+	& Apt.addKeyId spotifyAptKeyId
+	& Apt.addRepository spotifyAptRepository
 	& Apt.update
 	& Apt.upgrade
 	& Gpg.installed
@@ -52,7 +43,7 @@ removedPkgs :: [String]
 removedPkgs = ["firefox"]
 
 installedPkgs :: [String]
-installedPkgs = concat [systools, zfstools, browsing, development, crypto, texlive, virtualization, kde]
+installedPkgs = concat [systools, zfstools, browsing, development, crypto, texlive, virtualization, kde, spotify]
 
 systools :: [String]
 systools = ["zsh", "emacs24", "most", "btrfs-tools"]
@@ -123,3 +114,15 @@ texlive = [
 	"texlive-publishers",
 	"texlive-science",
 	"texlive-xetex"]
+
+spotifyAptKeyId :: Apt.AptKeyId
+spotifyAptKeyId =
+	Apt.AptKeyId "Spotify" "BBEBDCB318AD50EC6865090613B00F1FD2C19886" "hkp://keyserver.ubuntu.com:80"
+
+spotifyAptRepository :: Apt.AptRepository
+spotifyAptRepository =
+	Apt.AptRepositorySource
+		"deb http://repository.spotify.com stable non-free"
+
+spotify :: [String]
+spotify = ["spotify-client"]
